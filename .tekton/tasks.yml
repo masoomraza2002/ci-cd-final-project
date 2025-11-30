@@ -1,4 +1,4 @@
-
+# cleanup task
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
@@ -8,7 +8,23 @@ spec:
     - name: cleanup
       image: python:3.9-slim
       script: |
-        # Remove unnecessary files
         rm -rf __pycache__
         rm -rf .pytest_cache
         echo "Cleanup completed."
+
+
+---
+
+# test task
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: test
+spec:
+  steps:
+    - name: run-tests
+      image: python:3.9-slim
+      script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        nosetests -v --with-spec --spec-color --with-coverage --cover-package=app
